@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Misterio del gato di cristal</title>
+    <style>
+        :root {
+            --bg: rgb(67, 127, 159);
+            --fg: #ffffff;
+            --panel: rgb(55, 105, 136);
+            --radius: 16px;
+            --muted: rgba(255, 255, 255, .78);
+            --border: rgba(255, 255, 255, .35);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Noto Sans", sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.65;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 36px 18px 64px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: clamp(26px, 3.2vw, 42px);
+            letter-spacing: .2px;
+        }
+
+        header .sub {
+            margin: 10px auto 0;
+            max-width: 70ch;
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+
+        /* “лист” как в статье */
+        .paper {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px 20px;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, .18);
+            backdrop-filter: blur(2px);
+        }
+
+        /* типографика */
+
+
+        .paper p {
+            margin: 0 0 14px;
+            font-size: 1.08rem;
+        }
+
+        .paper p:last-child {
+            margin-bottom: 0;
+        }
+
+        .paper .lead {
+            font-size: 1.12rem;
+            color: rgba(255, 255, 255, .9);
+        }
+
+        .paper .extra-space {
+            margin-bottom: 70px;
+            /* увеличь сколько нужно */
+        }
+
+
+        .paper hr {
+            border: none;
+            height: 2px;
+            /* толщина линии */
+            width: 360px;
+            /* длина линии — можно менять */
+            margin: 32px auto;
+            /* центрирование по горизонтали */
+            background: rgba(255, 255, 255, 0.9);
+            /* белый цвет */
+            border-radius: 2px;
+            /* мягкие края */
+        }
+
+
+
+        .paper h2 {
+            margin: 0 0 10px;
+            font-size: 1.15rem;
+            /* меньше размер */
+            font-weight: 500;
+            /* не жирный заголовок */
+            color: rgba(255, 255, 255, 0.9);
+            /* мягче белого */
+            letter-spacing: 0.3px;
+        }
+
+
+        /* иллюстрации */
+        figure {
+            margin: 18px 0;
+            padding: 0;
+            /* убираем поля */
+            background: transparent;
+            /* фон не нужен */
+            border: none;
+            /* если хочешь — убери рамку отсюда */
+            box-shadow: none;
+            /* и тень отсюда */
+        }
+
+        figure img {
+            height: 220px;
+            width: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 12px;
+
+            /* визуальный "кадр" теперь у картинки */
+            background: var(--panel);
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+            padding: 12px;
+            /* если нужен "паспарту" — оставь, если нет — убери */
+        }
+
+
+
+        figcaption {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: .95rem;
+        }
+
+        .cards-row {
+            display: flex;
+            gap: 90px;
+            justify-content: center;
+            margin: 24px 0;
+        }
+
+        .card {
+            width: 180px;
+            /* вертикальная карточка */
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px;
+            text-align: center;
+        }
+
+        .card img {
+            width: 100%;
+            height: 220px;
+            /* делает картинку вертикальной */
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .card p {
+            margin: 8px 0 0;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+
+        /* “врезки” слева/справа для десктопа */
+        .float-right {
+            float: right;
+            width: min(320px, 42%);
+            margin: 6px 0 14px 16px;
+        }
+
+        .float-left {
+            float: left;
+            width: min(320px, 42%);
+            margin: 6px 16px 14px 0;
+        }
+
+        @media (max-width: 700px) {
+
+            .float-right,
+            .float-left {
+                float: none;
+                width: 100%;
+                margin: 16px 0;
+            }
+
+            .cards-row {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* небольшая “заметка” */
+        .note {
+            margin: 16px 0;
+            padding: 14px 14px;
+            background: rgba(55, 105, 136, .85);
+            border: 1px solid var(--border);
+            border-left: 6px solid rgba(255, 255, 255, .35);
+            border-radius: 14px;
+            color: rgba(255, 255, 255, .92);
+        }
+
+        .note b {
+            color: #fff;
+        }
+
+        /* чтобы float не ломал контейнер */
+        .clearfix::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <h1>Misterio del gato de cristal</h1>
+            <!-- <p class="sub">Texto continuo con pocas ilustraciones, en el mismo estilo (colores y tipografía) que tu
+                página.</p> -->
+        </header>
+
+        <article class="paper clearfix">
+            <p class="lead">
+                El señor Arturo Gonsález vive en una casa grande no muy lejos de la ciudad. La casa está en
+                un lugar muy
+                tranquilo, en el bosque. Para entrar en la casa hay que pasar por unas puertas antiguas. Siempre están
+                abiertas, pero en la entrada hay seguridad las veinticuatro horas. Delante de la casa hay un patio
+                grande y detrás hay un jardín. En el jardín, entre los árboles, hay una piscina bastante grande y una
+                zona de descanso.
+            </p>
+            <p class="lead">
+                La casa tiene dos pisos. En la planta baja hay un recibidor. Desde allí puedes ir a la cocina, al
+                comedor y a la biblioteca. También hay una habitación pequeña pero bonita. Allí vive Pedro García, el
+                mayordomo del señor Gonsález.
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li>Completa la descripción.</li>
+                    <li>Dibuja el plano.</li>
+                    <li>Elige un punto y di adónde puedes ir.</li>
+                </ol>
+            </section>
+            <hr>
+
+            <figure class="float-right">
+                <img src="pics/comedor.png" alt="Comedor">
+
+            </figure>
+            <p class="lead">
+                El comedor también es la sala de estar. Es una habitación grande y bonita, con ventanas enormes y
+                salida al patio, desde donde se puede ir directamente al jardín. Cuando hace buen tiempo, el señor
+                Gonsález almuerza y cena en el patio. Pero cuando hace frío, come en el comedor, cerca de una gran
+                chimenea. Al señor Gonsález le gustan los muebles antiguos, los cuadros y las estatuillas, por eso en el
+                comedor hay una vitrina grande con piezas interesantes. Siempre busca y compra algo, y también vende
+                algunas cosas. Siempre tiene suerte en el negocio.
+
+            </p>
+
+            <figure class="float-left">
+                <img src="pics/biblioteca.png" alt="Biblioteca">
+
+            </figure>
+            <p class="lead extra-space">
+                La biblioteca también tiene salida directa al jardín. No es una habitación muy grande. En el centro hay
+                un escritorio antiguo de madera, y a lo largo de las paredes hay estanterías con libros.
+                También hay una chimenea. El señor Gonsález usa la biblioteca como despacho o lee allí por las noches
+                junto al fuego. <br>
+                En el primer piso hay dormitorios. Está el dormitorio del señor Gonsález, los dormitorios
+                de sus dos hijos y dos habitaciones para invitados.
+            </p>
+
+
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li>Describe la cocina o la habitación de Pedro García.</li>
+                    <li>Elige tu lugar favorito en la planta baja. ¿Por qué?</li>
+
+                </ol>
+            </section>
+            <hr>
+
+
+            <p class="lead">
+                El señor Gonsález tiene sesenta y un años. Es alto, delgado y todavía bastante guapo. Tiene el pelo
+                gris, no lleva barba ni bigote y usa gafas solo cuando lee.<br>
+                El señor Gonsález vive solo, aparte de Pedro García. Su esposa murió hace algunos años. Fue un accidente
+                trágico y ella era todavía muy joven.
+
+            </p>
+            <figure class="float-right">
+                <img src="pics/Rodrigo.png" alt="Rodrigo">
+
+            </figure>
+            <p class="lead extra-space">
+                Pero el señor Gonsález tiene dos hijos adultos de su primer matrimonio. Su primera esposa también murió
+                de forma trágica, pero ya pasaron muchos años.<br>
+                El hijo mayor, Rodrigo, es un arquitecto de éxito. Tiene su propia empresa y vive en la ciudad. Tiene
+                cuarenta años. Es alto y delgado como su padre, pero no es guapo. El padre está muy orgulloso de
+                Rodrigo.
+
+            </p>
+            <figure class="float-left">
+                <img src="pics/Ignacio.png" alt="Ignacio">
+
+            </figure>
+            <p class="lead extra-space">
+                <br> <br>
+                El hijo menor, Ignacio, tiene treinta y tres años. Es pintor, muy talentoso, pero no sabe vender sus
+                cuadros. Nunca tiene dinero y se lo pide siempre a su padre o a su hermano, y luego lo gasta en
+                cosas
+                inútiles.<br>
+                Hoy los dos hermanos llegan a la casa de su padre.
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li>¿Quién es el señor Gonsález?
+                        <div class="cards-row">
+                            <div class="card">
+                                <img src="pics/gordo.png" alt="">
+                            </div>
+
+                            <div class="card">
+                                <img src="pics/guapo.png" alt="">
+                            </div>
+
+                            <div class="card">
+                                <img src="pics/bigotes.png" alt="">
+                            </div>
+                        </div>
+                    </li>
+
+
+
+
+                    <li>Describe los hermanos de una manera más detallada.</li>
+                </ol>
+            </section>
+            <hr>
+            <p class="lead">
+                La empresa de Rodrigo tiene un período difícil. No quiere decirselo a su padre, pero necesita dinero.
+                Quiere proponerle un proyecto conjunto sin explicar cuánto necesita su ayuda. No está contento de ver a
+                Ignacio. Ignacio siempre viene para pedir dinero y el padre siempre se lo da. Rodrigo no quiere
+                competencia.<br>
+                Ignacio ha llegado un poco antes. Ya ha hablado con su padre y, de forma inesperada, el padre le ha
+                dicho que no. Ignacio está muy triste, pero quiere quedarse a cenar. Pedro García cocina muy bien.
+                Ignacio no quiere decirle a Rodrigo que el padre no le ha dado dinero. </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li>¿Por qué Ignacio no quiere decirle a Rodrigo que el padre no le ha dado dinero? ¿Cómo se siente?
+                    </li>
+                    <li>¿Qué pasó en la empresa de Rodrigo?</li>
+
+                </ol>
+            </section>
+            <hr>
+            <p class="lead"> El señor Gonsález informa que a la cena va a venir otra persona. Se llama Juan Sánchez. Es
+                experto en arte
+                y quiere comprar una de las estatuillas del señor Gonsález.
+
+            </p>
+
+            <figure class="float-left">
+                <img src="pics/gato.png" alt="Gato">
+
+            </figure>
+
+            <p class="lead">
+                Es una estatuilla de gato de cristal muy bonita, del tamaño de un gato real. Brilla mucho y dicen que un
+                joyero muy famoso la hizo hace doscientos años. Es muy cara. El señor Sánchez está listo para pagar un
+                precio alto, pero pidió primero una evaluación de un experto independiente. El informe llega un poco
+                tarde, casi a la hora de la cena, cuando el señor Sánchez ya está en la casa. Por eso todos deciden
+                hablar de negocios mañana y hoy disfrutar de la cena que preparó Pedro García.
+            </p>
+
+            <p class="lead">
+                Hace fresco afuera, así que cenan en el comedor.<br>
+                Cuando el señor Sánchez entra del jardín en el comedor, casi rompe la puerta de vidrio. Está tan limpia
+                que no la vio y trató de pasar a través de ella. El señor González dice que él también siempre teme
+                hacer lo mismo. Pedro García limpia muy bien. Todos rien y van a cenar. El señor González pone el
+                informe del valor de la estatuilla junto al Gato, que está sobre la chimenea y parece mirarlos. Después
+                de la cena todos van a sus dormitorios porque están cansados y al día siguiente tienen mucho trabajo.
+
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li>¿Qué ha preparado Pedro García para la cena?
+                    </li>
+                    <li>¿Qué va a pasar luego?</li>
+
+                </ol>
+            </section>
+            <hr>
+            <p class="lead">
+                Por la mañana, antes del desayuno, el señor Sánchez se acerca a la chimenea. Sobre la chimenea no están
+                el Gato ni el informe.
+                <br>El informe, dice el señor González, está en la biblioteca, porque él lo llevó allí después de la
+                cena. Pero el Gato no está en ninguna parte. Desapareció.
+
+
+            </p>
+            <p class="lead">
+                Después de buscar sin éxito, el señor González llama a la policía, que llega enseguida. El inspector
+                Martínez empieza a trabajar con atención. Nadie salió de la casa ni entró después de la cena. El Gato
+                probablemente todavía está dentro<br>
+                El señor Gonsález no puede creer que alguien presente haya robado el Gato. No puede ser.<br>
+                Los hombres del inspector empiezan una búsqueda en la casa.
+
+            </p>
+
+            <p class="lead">
+                Sin embargo, el inspector Martínez empieza a hacer preguntas.
+
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+
+                    <li>
+                        <figure class="float-left">
+                            <img src="pics/martinez.png" alt="Inspector Martinez">
+
+                        </figure>¿Cómo es el inspector Martínez?
+                    </li>
+                    <li>Eres el inspector Martínez. <br> Interroga al señor González, al señor Sánchez, a Rodrigo y a
+                        Ignacio. <br>Haz preguntas claras para descubrir la verdad.</li>
+                    <li> Después de hablar con el señor González, el señor Sánchez, Rodrigo e Ignacio el inspector
+                        Martínez llama a Pedro García. <br> Haz preguntas a Pedro García <br><br>
+                    </li>
+
+                </ol>
+            </section>
+            <hr>
+
+            <p class="lead">
+                A las once todos se fueron a dormir. Él limpió rápidamente el comedor y la cocina y se acostó a las once
+                y media, y se durmió enseguida. Sí, siempre se duerme rápido.<br>
+                Pero después de algún tiempo se despertó. Le pareció que alguien bajaba por la escalera. No, no sabe
+                quién era. No, no miró el reloj.<br>
+                Se durmió otra vez inmediatamente, pero después de algún tiempo se despertó de nuevo. Otra vez oyó
+                pasos. Esta vez sí miró el reloj: eran las 01:50. Abrió un poco la puerta y vio que alguien entraba en
+                la cocina. No sabe quién era.<br>
+                Se acostó y, como siempre, se durmió enseguida, pero se despertó una vez más. Abrió otra vez la puerta y
+                vio a Rodrigo en el recibidor. No sabe de dónde salió Rodrigo: de la cocina, de la biblioteca o del
+                comedor. Rodrigo no vio a Pedro García.
+
+            </p>
+            <p class="lead">
+                Los hombres del inspector terminan la primera búsqueda de la casa. No encuentran el Gato, pero
+                encuentran el informe en la biblioteca, dentro de una cajita cerrada sobre la mesa justo come dijo el
+                dueño de la casa. El Gato es muy valioso.
+                <br>
+                El inspector vuelve a preguntar a Rodrigo.
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li> Interroga a Rodrigo otra vez
+                    </li>
+
+                </ol>
+            </section>
+            <hr>
+            <p class="lead">
+                Rodrigo admite que salió de su habitación. Mintió porque la verdad parecía sospechosa. No durmió y bajó
+                a la biblioteca a trabajar con documentos de su empresa. Bajó a la una y media y volvió a su habitación
+                a las dos y veinte. A las dos en punto oyó un ruido detrás de la puerta. Sí miró el reloj.
+            </p>
+            <p class="lead">
+                El inspector no entiende nada. En la casa hay cuatro personas y nadie duerme por la noches <br>
+                Vuelve a interrogar al invitado.
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li> Interroga al señor Sánchez otra vez.
+                    </li>
+
+                </ol>
+            </section>
+            <hr>
+            <p class="lead">
+                El señor Sánchez reconoce que, en efecto, bajó. Le da vergüenza contarlo, pero ahora el asunto es serio.
+                Se despertó a la una y media y quiso comer un pastel. El pastel era muy grande y estaba muy rico. Comió
+                dos trozos en la cena y no se atrevió a comer más. Pero si por la noche comía un trozo, nadie lo sabría,
+                todavía quedaba mucho. Le pareció que oyó pasos, pero no estaba seguro. Por fin, hacia la una y cuarenta
+                y cinco, para ser exactos a la 1:47, miró el reloj, se levantó y bajó a la cocina. Había mucho pastel y
+                pensó en tomar dos trozos, pero pensó que eso era demasiado evidente y decidió comer uno. Dudó en comer
+                el trozo allí mismo, pero decidió que era sería mejor llevarlo arriba. Unos diez minutos después, aunque
+                no miró el reloj, estaba en su habitación, comíó el pastel y no oyó nada más.
+            </p>
+            <p class="lead">
+                El inspector Martínez vuelve a hablar con Ignacio.
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li> Interroga a Ignacio otra vez.
+                    </li>
+
+                </ol>
+            </section>
+            <hr>
+            <p class="lead">
+                Ignacio realmente bajó a la cocina por la noche. ¡Qué sorpresa! Quiso comer un trozo de pastel. Bajó a
+                la una y cincuenta, miró el reloj. Bebió té, comió el pastel y a las dos y diez volvió a su habitación.
+                Oyó pasos hacía las dos, pero no sabía de quién eran.
+            </p>
+            <p class="lead">
+                El inspector Martínez no entiende nada. El señor Sánchez e Ignacio fueron a la cocina al mismo tiempo
+                para comer pastel, pero no se vieron. Uno de los dos miente.
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li> Hay que descubrir quien miente. Habla con Pedro García, Ignacio el señor Sánchez.
+                    </li>
+
+                </ol>
+            </section>
+            <hr>
+            <p class="lead">
+                Pedro García confirma que hay dos trozos menos de
+                pastel que por la noche. Sí, los contó. El señor Sánchez jura que por la noche comió uno. También jura
+                que no vio a Ignacio. Ignacio afirma que fue a la
+                cocina y comió pastel con té. ¡Pedro García está muy sorprendido! No hay té en casa. Se terminó el día
+                anterior y Pedro García no tuvo tiempo de comprarlo. Ignacio miente.
+
+            </p>
+            <p class="lead">
+                El inspector Martínez pregunta a Ignacio otra vez más.
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li> Interroga a Ignacio otra vez.
+                    </li>
+
+                </ol>
+            </section>
+            <hr>
+            <p class="lead">
+                Ignacio reconoce que a la una y cuarenta y cinco, y sí miró el reloj, fue al comedor. Quería saber
+                cuánto costaba el Gato. Estaba curioso. Su padre rechazó a ayudarlo y dijo que no tenía dinero. Tuvo
+                miedo de encender la luz, así que buscó el documento con una linterna un rato. Pero después comprendió
+                que el documento no estaba. ¡Y el Gato tampoco estaba! Salió del comedor, oyó pasos en la escalera (el
+                inspector Martínez comprende que era el señor Sánchez que subía con el pastel a su habitación) y se
+                escondió en la cocina. Estaba nervioso y triste, así que comió un trozo de pastel y a las dos y diez,
+                miró el reloj, subió a su habitación.
+            </p>
+            <p class="lead">
+                El inspector Martínez está listo para continuar las preguntas, pero en ese momento sus hombres informan
+                que está discubierto un otro informe sobre el valor del Gato. En el antiguo escritorio de la biblioteca
+                hay un cajón secreto. Lo abrieron y encontraron un segundo informe muy parecido al primero. Pero en él
+                dice que el Gato no es de cristal de hace doscientos años, sino de vidrio moderno. Es una falsificación
+                y no vale nada, aunque sigue siendo bastante bonito. El señor Sánchez está en choque. Estaba dispuesto
+                para pagar una enorme cantidad de dinero por él.
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li> Habla con el señor Gonsález.
+                    </li>
+
+                </ol>
+            </section>
+            <hr>
+            <p class="lead">
+                El señor González reconoce que falsificó el informe. Bajó a la biblioteca a la una de la noche. Esos
+                fueron los pasos que oyó Pedro García la primera vez. A la una y cuarenta el dueño de la casa salió de
+                la biblioteca y volvió a su dormitorio. Se durmió inmediatamente y no vio ni oyó nada.
+
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li> ¿Quién es culpable?.
+                    </li>
+
+                </ol>
+            </section>
+            <hr>
+            <p class="lead">
+
+                Todos miran a Rodrigo. Él no pudo ir a la biblioteca a trabajar con documentos, porque en ese momento el
+                señor González estába allí. ¡Rodrigo es culpable! Pero ¿qué hizo con el Gato? ¿Cómo lo escondió?
+                Buscaron por toda la casa y el jardín ya dos veces.
+
+            </p>
+            <hr>
+            <section class="actividades">
+                <h2>Actividades</h2>
+                <ol>
+                    <li> ¿Dónde está el Gato?.
+                    </li>
+
+                </ol>
+            </section>
+            <hr>
+            <p class="lead">
+                «Lo miramos y no lo vemos», dice pensando el inspector Martínez.
+                “Como la puerta de vidrio”, dice el señor Sanchez.
+                Todos tienen la misma idea al mismo tiempo. Se acercan a la piscina. Parece vacia, pero ya saben que hay
+                dentro. A pesar del día fresco, uno de los policías salta al agua y después de cinco minutos saca de la
+                piscina el Gato hermoso e inútil.
+
+
+            </p>
+        </article>
+    </div>
+</body>
+
+</html>
